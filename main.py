@@ -3,7 +3,7 @@ from threading import Thread
 import cv2
 import re
 from ultralytics import YOLO
-#PATH_VIDEOS - указываешь путь до Dataset, где хранятся видосы. Только папку, программа сама найдет подпапки с камерами.
+#PATH_VIDEOS - указываешь путь до Dataset, где хранятся видосы. Только папку, программа сама найдет подпапки с камерами. Для теста можешь написать videos
 PATH_VIDEOS = "D:/Dataset"
 PATH_DETECTED = "detected_from_video_screen"
 
