@@ -11,7 +11,10 @@ label_videos = []
 label_frames = []
 threads = []
 threads2 = []
-
+if not os.path.isdir("detected_from_video_screen"):
+    os.mkdir("detected_from_video_screen")
+if not os.path.isdir("blur-face"):
+    os.mkdir("blur-face")
 for dirpath, dirnames, filenames in os.walk(PATH_VIDEOS):
     for filename in filenames:
         string = os.path.join(dirpath, filename)
