@@ -8,7 +8,7 @@
 
 **Необходимые библиотеки:**
 - threading
-- yltralytics
+- ultralytics
 - cv2
 
 Для теста используй видео в папке video. Просто укажи в main.py путь "videos".
