@@ -1,5 +1,5 @@
 import os
-from threading import Thread
+from multiprocessing import Process
 import cv2
 import re
 from ultralytics import YOLO
@@ -27,6 +27,7 @@ def process_videos(path_to_file):
         video_camera_capture = cv2.VideoCapture(path_to_file[0])
     except Exception:
         print("Video is not accessed")
+        raise
     counter = 0
     while True:
         while video_camera_capture.isOpened():
@@ -47,13 +48,13 @@ def process_videos(path_to_file):
                 cv2.rectangle(frame, (x1, y1), (x2, y2), color=(255, 0, 0), thickness=2)
                 counter = counter+1
 
-                cv2.imshow("camera", frame)
+                # cv2.imshow("camera", frame)
 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
                     
         video_camera_capture.release() 
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
         break
 
 
@@ -68,9 +69,9 @@ def yolo_face_blur(path_to_file):
     model = YOLO('model/yolov8n.pt')
     model = YOLO(weights_path)
     obj = path_to_file
-    img_path = [0]
+    img_path = obj[0]
     for i in img_path:
-        pic = PATH_DETECTED + "/" + obj[1] + "/" + i
+        pic = PATH_DETECTED + "/" + str(obj[1]) + "/" + str(i)
         results = model(pic)
         img = cv2.imread(pic)
 
@@ -98,18 +99,21 @@ def yolo_face_blur(path_to_file):
         if not os.path.isdir("blur-face/{0}".format(obj[1])):
             os.mkdir("blur-face/{0}".format(obj[1]))
         cv2.imwrite("blur-face/{0}/yolo_output{1}.jpg".format(obj[1], counter), img)
-        counter+=1
+        counter += 1
+if __name__ == "__main__":
+    for i in label_videos:
+        threads.append(Process(target=process_videos, args=(i,)))
+    for i in range(len(label_videos)):
+        threads[i].start()
+        threads[i].join()
 
-for i in label_videos:
-    threads.append(Thread(target=process_videos, args=(i, )))
-for i in threads:
-    i.start()
-for dirpath, dirnames, filenames in os.walk(PATH_DETECTED):
-    for dirname in dirnames:
-        for i, j, filename in os.walk(PATH_DETECTED + "/" + dirname):
-            label_frames.append((filename, dirname)) 
+    for dirpath, dirnames, filenames in os.walk(PATH_DETECTED):
+        for dirname in dirnames:
+            for i, j, filename in os.walk(PATH_DETECTED + "/" + dirname):
+                label_frames.append((filename, dirname))
 
-for i in label_frames:
-    threads2.append(Thread(target=yolo_face_blur, args=(i, )))
-for i in threads2:
-    i.start()
+    for i in label_frames:
+        threads2.append(Process(target=yolo_face_blur, args=(i,)))
+    for i in range(len(label_frames)):
+        threads2[i].start()
+        threads2[i].join()
