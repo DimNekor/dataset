@@ -18,3 +18,5 @@
 ```
 pip install -r requirements.txt
 ```
+
+bat файл лежит в папке processing_videos
