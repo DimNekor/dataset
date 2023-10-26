@@ -19,10 +19,12 @@ for dirpath, dirnames, filenames in os.walk(PATH_VIDEOS):
     for filename in filenames:
         string = os.path.join(dirpath, filename)
         result = re.search(r'Kam\d', string)
-        label_videos.append([string, result.group(0)])
-
+        try:
+            label_videos.append([string, result.group(0)])
+        except Exception:
+            pass
 def process_videos(path_to_file):
-    model = YOLO('yolov8n.pt')
+    model = YOLO('model/yolov8n.pt')
     try:
         video_camera_capture = cv2.VideoCapture(path_to_file[0])
     except Exception:
@@ -56,7 +58,6 @@ def process_videos(path_to_file):
         video_camera_capture.release() 
         # cv2.destroyAllWindows()
         break
-
 
 for dirpath, dirnames, filenames in os.walk(PATH_DETECTED):
     for dirname in dirnames:
