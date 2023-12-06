@@ -1,9 +1,11 @@
 import cv2
+# import torch
 from ultralytics import YOLO
 from blur_face import blur_face
 import pathlib, glob
 import os
 PATH_VIDEOS = "D:/Dataset"
+# device = "0" if torch.cuda.is_available() else "cpu"
 label_videos = glob.glob(PATH_VIDEOS + "/*/*.mp4")
 def proccess_videos(videos_url, name_cam):
     count = 0
