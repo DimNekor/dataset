@@ -1,4 +1,5 @@
 import os
+import glob
 from multiprocessing import Process
 import cv2
 import re
@@ -15,14 +16,8 @@ if not os.path.isdir("detected_from_video_screen"):
     os.mkdir("detected_from_video_screen")
 if not os.path.isdir("blur-face"):
     os.mkdir("blur-face")
-for dirpath, dirnames, filenames in os.walk(PATH_VIDEOS):
-    for filename in filenames:
-        string = os.path.join(dirpath, filename)
-        result = re.search(r'Kam\d', string)
-        try:
-            label_videos.append([string, result.group(0)])
-        except Exception:
-            pass
+label_videos = glob.glob(PATH_VIDEOS + "/*/*.mp4")
+print(label_videos)
 def process_videos(path_to_file):
     model = YOLO('model/yolov8n.pt')
     try:
@@ -101,20 +96,20 @@ def yolo_face_blur(path_to_file):
             os.mkdir("blur-face/{0}".format(obj[1]))
         cv2.imwrite("blur-face/{0}/yolo_output{1}.jpg".format(obj[1], counter), img)
         counter += 1
-if __name__ == "__main__":
-    for i in label_videos:
-        threads.append(Process(target=process_videos, args=(i,)))
-    for i in range(len(label_videos)):
-        threads[i].start()
-        threads[i].join()
+# if __name__ == "__main__":
+#     for i in label_videos:
+#         threads.append(Process(target=process_videos, args=(i,)))
+#     for i in range(len(label_videos)):
+#         threads[i].start()
+#         threads[i].join()
 
-    for dirpath, dirnames, filenames in os.walk(PATH_DETECTED):
-        for dirname in dirnames:
-            for i, j, filename in os.walk(PATH_DETECTED + "/" + dirname):
-                label_frames.append((filename, dirname))
+#     for dirpath, dirnames, filenames in os.walk(PATH_DETECTED):
+#         for dirname in dirnames:
+#             for i, j, filename in os.walk(PATH_DETECTED + "/" + dirname):
+#                 label_frames.append((filename, dirname))
 
-    for i in label_frames:
-        threads2.append(Process(target=yolo_face_blur, args=(i,)))
-    for i in range(len(label_frames)):
-        threads2[i].start()
-        threads2[i].join()
+#     for i in label_frames:
+#         threads2.append(Process(target=yolo_face_blur, args=(i,)))
+#     for i in range(len(label_frames)):
+#         threads2[i].start()
+#         threads2[i].join()
