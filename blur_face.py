@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import cv2
 def blur_face(region):
-    weights_path = "pretrained_models/YOLO_Model.pt"
+    weights_path = "D:\FramesAndBlur\dataset\YOLO_Model.pt"
     model = YOLO(weights_path)
     res = model(region)
     for r in res:
